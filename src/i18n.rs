@@ -1,7 +1,3 @@
-// Translation-catalog consumers land in follow-up PRs; gate the unused
-// `loader()`/`t!` machinery here so clippy stays quiet until call sites exist.
-#![allow(dead_code)]
-
 use std::borrow::Cow;
 use std::cell::RefCell;
 
