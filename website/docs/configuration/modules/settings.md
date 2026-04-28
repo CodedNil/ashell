@@ -49,9 +49,9 @@ reboot_cmd = "systemctl reboot"
 logout_cmd = "loginctl kill-user $(whoami)"
 ```
 
-The `lock_cmd` parameter is optional. If not set, the lock button will not appear.
+The `lock_cmd` parameter is optional. If not set, or set to an empty string, the lock button will not appear.
 
-The `hibernate_cmd` parameter is optional. If not set, the hibernate button will not appear.
+The `hibernate_cmd` parameter is optional. If not set, or set to an empty string, the hibernate button will not appear.
 
 With the `audio_sinks_more_cmd` and `audio_sources_more_cmd`  
 options you can set commands to open the audio settings  
@@ -61,6 +61,8 @@ When configured, right-clicking the speaker or microphone indicators (or their q
 With the `wifi_more_cmd`, `vpn_more_cmd` and `bluetooth_more_cmd` options  
 you can set commands to open the network, VPN and bluetooth settings.  
 Right-clicking the Wi-Fi, VPN, Bluetooth or airplane-mode quick settings buttons (and the Wi-Fi indicator in the bar) triggers these commands directly when they are set.
+
+Optional command fields in this module treat empty or whitespace-only strings as unset.
 
 With the `remove_airplane_btn` option you can remove the airplane mode button.
 
@@ -288,6 +290,8 @@ These buttons can execute commands when clicked.
 
 - If `status_command` is provided, the button acts as a **toggle** with visual state tracking
 - If `status_command` is not provided, the button acts as a **launcher** (simple command execution)
+
+An empty or whitespace-only `status_command` is treated as not provided.
 
 ### Configuration
 
