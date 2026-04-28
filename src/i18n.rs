@@ -143,8 +143,9 @@ fn env_chain(config: Option<&str>, category_var: &str) -> Option<String> {
 }
 
 fn derive_units(c: Locale) -> UnitSystem {
+    // `en_LR` omitted: not a chrono Locale variant.
     match c {
-        Locale::en_US => UnitSystem::Imperial,
+        Locale::en_US | Locale::my_MM => UnitSystem::Imperial,
         _ => UnitSystem::Metric,
     }
 }
