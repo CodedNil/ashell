@@ -37,20 +37,21 @@ You can configure some function of this module.
 With the `lock_cmd` option you can set a command to lock  
 the system, if not set the related button will not appear.
 
-With the `shutdown_cmd`, `suspend_cmd`, `hibernate_cmd`, `reboot_cmd`,
-and `logout_cmd`, you can change the related commands to
-shut down, suspend, hibernate, reboot, or log out of the system.  
+With the `shutdown_cmd`, `suspend_cmd`, `reboot_cmd`, and `logout_cmd`,
+you can change the related commands to
+shut down, suspend, reboot, or log out of the system.  
 These parameters are optional and have the following default values:
 
 ```toml
 shutdown_cmd = "shutdown now"
 suspend_cmd = "systemctl suspend"
-hibernate_cmd = "systemctl hibernate"
 reboot_cmd = "systemctl reboot"
 logout_cmd = "loginctl kill-user $(whoami)"
 ```
 
-The `lock_cmd` parameter is optional. If not set, the lock button will not appear.
+The `lock_cmd` parameter is optional. If not set, or set to an empty string, the lock button will not appear.
+
+The `hibernate_cmd` parameter is optional. If not set, or set to an empty string, the hibernate button will not appear.
 
 With the `audio_sinks_more_cmd` and `audio_sources_more_cmd`  
 options you can set commands to open the audio settings  
@@ -60,6 +61,8 @@ When configured, right-clicking the speaker or microphone indicators (or their q
 With the `wifi_more_cmd`, `vpn_more_cmd` and `bluetooth_more_cmd` options  
 you can set commands to open the network, VPN and bluetooth settings.  
 Right-clicking the Wi-Fi, VPN, Bluetooth or airplane-mode quick settings buttons (and the Wi-Fi indicator in the bar) triggers these commands directly when they are set.
+
+Optional command fields in this module treat empty or whitespace-only strings as unset.
 
 With the `remove_airplane_btn` option you can remove the airplane mode button.
 
@@ -288,6 +291,8 @@ These buttons can execute commands when clicked.
 - If `status_command` is provided, the button acts as a **toggle** with visual state tracking
 - If `status_command` is not provided, the button acts as a **launcher** (simple command execution)
 
+An empty or whitespace-only `status_command` is treated as not provided.
+
 ### Configuration
 
 | Field            | Required | Description                                                 |
@@ -364,6 +369,8 @@ audio_sources_more_cmd = "pavucontrol -t 4"
 wifi_more_cmd = "nm-connection-editor"
 vpn_more_cmd = "nm-connection-editor"
 bluetooth_more_cmd = "blueman-manager"
+# Optional: show hibernate button
+hibernate_cmd = "systemctl hibernate"
 remove_airplane_btn = true
 remove_idle_btn = true
 indicators = ["Battery", "Bluetooth", "Network", "Audio", "Microphone", "Brightness"]

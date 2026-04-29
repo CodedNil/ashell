@@ -535,10 +535,12 @@ pub enum PeripheralIndicators {
 #[derive(Deserialize, Clone, Debug)]
 #[serde(default)]
 pub struct SettingsModuleConfig {
+    #[serde(default, deserialize_with = "empty_string_as_none")]
     pub lock_cmd: Option<String>,
     pub shutdown_cmd: String,
     pub suspend_cmd: String,
-    pub hibernate_cmd: String,
+    #[serde(default, deserialize_with = "empty_string_as_none")]
+    pub hibernate_cmd: Option<String>,
     pub reboot_cmd: String,
     pub logout_cmd: String,
     pub battery_format: SettingsFormat,
@@ -551,10 +553,15 @@ pub struct SettingsModuleConfig {
     pub network_indicator_format: SettingsFormat,
     pub bluetooth_indicator_format: SettingsFormat,
     pub brightness_indicator_format: SettingsFormat,
+    #[serde(default, deserialize_with = "empty_string_as_none")]
     pub audio_sinks_more_cmd: Option<String>,
+    #[serde(default, deserialize_with = "empty_string_as_none")]
     pub audio_sources_more_cmd: Option<String>,
+    #[serde(default, deserialize_with = "empty_string_as_none")]
     pub wifi_more_cmd: Option<String>,
+    #[serde(default, deserialize_with = "empty_string_as_none")]
     pub vpn_more_cmd: Option<String>,
+    #[serde(default, deserialize_with = "empty_string_as_none")]
     pub bluetooth_more_cmd: Option<String>,
     pub remove_airplane_btn: bool,
     pub remove_idle_btn: bool,
@@ -569,7 +576,7 @@ impl Default for SettingsModuleConfig {
             lock_cmd: Default::default(),
             shutdown_cmd: "shutdown now".to_string(),
             suspend_cmd: "systemctl suspend".to_string(),
-            hibernate_cmd: "systemctl hibernate".to_string(),
+            hibernate_cmd: Default::default(),
             reboot_cmd: "systemctl reboot".to_string(),
             logout_cmd: "loginctl kill-user $(whoami)".to_string(),
             battery_format: SettingsFormat::IconAndPercentage,
@@ -610,6 +617,7 @@ pub struct SettingsCustomButton {
     pub name: String,
     pub icon: String,
     pub command: String,
+    #[serde(default, deserialize_with = "empty_string_as_none")]
     pub status_command: Option<String>,
     pub tooltip: Option<String>,
 }
@@ -1013,6 +1021,14 @@ where
     }
 }
 
+fn empty_string_as_none<'de, D>(d: D) -> Result<Option<String>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    Ok(Option::<String>::deserialize(d)?
+        .and_then(|value| (!value.trim().is_empty()).then_some(value)))
+}
+
 /// Newtype wrapper around `Regex`to be deserializable and usable as a hashmap key
 #[serde_as]
 #[derive(Debug, Clone, Deserialize)]
@@ -1052,12 +1068,13 @@ pub enum CustomModuleType {
 #[derive(Deserialize, Clone, Debug)]
 pub struct CustomModuleDef {
     pub name: String,
-    #[serde(default)]
+    #[serde(default, deserialize_with = "empty_string_as_none")]
     pub command: Option<String>,
     #[serde(default)]
     pub icon: Option<String>,
 
     /// yields json lines containing text, alt, (pot tooltip)
+    #[serde(default, deserialize_with = "empty_string_as_none")]
     pub listen_cmd: Option<String>,
     /// map of regex -> icon
     pub icons: Option<HashMap<RegexCfg, String>>,
