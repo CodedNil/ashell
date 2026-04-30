@@ -126,3 +126,4 @@ weather-unknown = Unknown weather condition
 ## Notifications module
 notifications-heading = Notifications
 notifications-empty = No notifications
+notifications-group-count = { $count } new

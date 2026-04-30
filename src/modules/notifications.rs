@@ -710,7 +710,7 @@ impl Notifications {
                     .size(font_size.md)
                     .wrapping(text::Wrapping::WordOrGlyph)
                     .width(Length::Fill),
-                text(format!("{count} new")),
+                text(t!("notifications-group-count", count = count)),
                 icon_button(StaticIcon::Delete)
                     .on_press(clear_msg)
                     .size(ButtonSize::Large)
