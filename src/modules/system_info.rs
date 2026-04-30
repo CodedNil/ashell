@@ -336,7 +336,7 @@ impl SystemInfo {
         info_icon: StaticIcon,
         (display, unit): (impl std::fmt::Display + 'a, &str),
         threshold: Option<(V, V, V)>,
-        prefix: Option<&str>,
+        prefix: Option<String>,
     ) -> Element<'a, Message> {
         let space = use_theme(|t| t.space);
         let element = container(
@@ -522,7 +522,7 @@ impl SystemInfo {
                     self.config.memory.warn_threshold,
                     self.config.memory.alert_threshold,
                 )),
-                Some("swap"),
+                Some(t!("system-info-swap-indicator-prefix")),
             )),
 
             SystemInfoIndicator::Temperature => self.data.temperature.celsius.map(|cel| {
@@ -556,7 +556,7 @@ impl SystemInfo {
                                 self.config.disk.warn_threshold,
                                 self.config.disk.alert_threshold,
                             )),
-                            Some(config.name.as_deref().unwrap_or(disk_mount)),
+                            Some(config.name.as_deref().unwrap_or(disk_mount).to_string()),
                         ))
                     } else {
                         None
