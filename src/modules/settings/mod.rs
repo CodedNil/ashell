@@ -21,6 +21,7 @@ use crate::{
         power::{PowerSettings, PowerSettingsConfig},
     },
     services::idle_inhibitor::IdleInhibitorManager,
+    t,
     theme::use_theme,
 };
 use iced::{
@@ -623,7 +624,7 @@ impl Settings {
                                 IdleInhibitorManager::idle_inhibitor_icon(
                                     idle_inhibitor.is_inhibited(),
                                 ),
-                                "Idle Inhibitor".to_string(),
+                                t!("settings-idle-inhibitor"),
                                 None,
                                 idle_inhibitor.is_inhibited(),
                                 Message::ToggleInhibitIdle,

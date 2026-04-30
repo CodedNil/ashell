@@ -13,6 +13,7 @@ use crate::{
             NetworkService, Vpn, dbus::ConnectivityState,
         },
     },
+    t,
     theme::use_theme,
     utils::IndicatorState,
 };
@@ -381,7 +382,7 @@ impl NetworkSettings {
                 Some((
                     quick_setting_button(
                         active_connection.map_or_else(|| StaticIcon::Wifi0, |(_, _, icon)| icon),
-                        "Wi-Fi".to_string(),
+                        t!("settings-network-wifi"),
                         active_connection.map(|(name, _, _)| name.to_string()),
                         service.wifi_enabled,
                         Message::ToggleWiFi,
@@ -441,7 +442,7 @@ impl NetworkSettings {
                         .collect();
 
                     let subtitle = if actives.len() > 1 {
-                        Some(format!("{} VPNs Connected", actives.len()))
+                        Some(t!("settings-network-vpns-connected", count = actives.len()))
                     } else {
                         actives.first().map(|c| c.name.to_string())
                     };
@@ -449,7 +450,7 @@ impl NetworkSettings {
                     (
                         quick_setting_button(
                             StaticIcon::Vpn,
-                            "VPN".to_string(),
+                            t!("settings-network-vpn"),
                             subtitle,
                             !actives.is_empty(),
                             if !actives.is_empty()
@@ -486,7 +487,7 @@ impl NetworkSettings {
                 (
                     quick_setting_button(
                         Self::airplane_mode_icon(service.airplane_mode),
-                        "Airplane Mode".to_string(),
+                        t!("settings-network-airplane-mode"),
                         None,
                         service.airplane_mode,
                         Message::ToggleAirplaneMode,
@@ -508,11 +509,11 @@ impl NetworkSettings {
         let (space, font_size) = use_theme(|t| (t.space, t.font_size));
         let main = column!(
             row!(
-                text("Nearby Wifi").width(Length::Fill),
+                text(t!("settings-network-nearby-wifi")).width(Length::Fill),
                 text(if service.scanning_nearby_wifi {
-                    "Scanning..."
+                    t!("settings-scanning")
                 } else {
-                    ""
+                    String::new()
                 })
                 .size(font_size.sm),
                 icon_button(StaticIcon::Refresh).on_press(Message::ScanNearByWiFi)
@@ -593,7 +594,7 @@ impl NetworkSettings {
             column!(
                 main,
                 divider(),
-                styled_button("More")
+                styled_button(t!("settings-more"))
                     .on_press(Message::WiFiMore(id))
                     .width(Length::Fill)
             )
@@ -659,7 +660,7 @@ impl NetworkSettings {
             column!(
                 main,
                 divider(),
-                styled_button("More")
+                styled_button(t!("settings-more"))
                     .on_press(Message::VpnMore(id))
                     .width(Length::Fill)
             )
