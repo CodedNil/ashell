@@ -1,6 +1,7 @@
 use super::icons::{StaticIcon, icon, icon_button};
 use crate::{
     components::{ButtonHierarchy, ButtonKind, styled_button},
+    t,
     theme::use_theme,
 };
 use iced::{
@@ -27,19 +28,15 @@ pub fn view<'a>(
         use_theme(|theme| (theme.space, theme.font_size, theme.text_input_style()));
 
     let title = if warning_only {
-        "Open network"
+        t!("password-dialog-open-network-title")
     } else {
-        "Authentication required"
+        t!("password-dialog-authentication-required-title")
     };
 
     let description = if warning_only {
-        format!(
-            "\"{}\" is an open network. Data sent over this connection may be visible to others.
-Do you want to connect anyway?",
-            wifi_ssid
-        )
+        t!("password-dialog-open-network-warning", ssid = wifi_ssid)
     } else {
-        format!("Insert password to connect to: {}", wifi_ssid)
+        t!("password-dialog-insert-password", ssid = wifi_ssid)
     };
 
     column!(
@@ -81,11 +78,11 @@ Do you want to connect anyway?",
     .push(
         row!(
             space::horizontal(),
-            styled_button("Cancel")
+            styled_button(t!("password-dialog-cancel"))
                 .kind(ButtonKind::Outline)
                 .height(Length::Fixed(50.))
                 .on_press(Message::DialogCancelled(id)),
-            styled_button("Confirm")
+            styled_button(t!("password-dialog-confirm"))
                 .kind(ButtonKind::Solid)
                 .hierarchy(ButtonHierarchy::Primary)
                 .height(Length::Fixed(50.))
