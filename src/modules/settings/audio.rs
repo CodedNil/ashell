@@ -10,6 +10,7 @@ use crate::{
         ReadOnlyService, Service, ServiceEvent,
         audio::{AudioCommand, AudioService, ChannelVolumesExt, DevicePortType, Port},
     },
+    t,
     theme::use_theme,
     utils::IndicatorState,
     utils::remote_value::{self, Remote},
@@ -585,7 +586,9 @@ impl AudioSettings {
             Some(more_msg) => column!(
                 entries,
                 divider(),
-                styled_button("More").on_press(more_msg).width(Length::Fill),
+                styled_button(t!("settings-more"))
+                    .on_press(more_msg)
+                    .width(Length::Fill),
             )
             .spacing(space.sm)
             .into(),

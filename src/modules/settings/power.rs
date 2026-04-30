@@ -14,6 +14,7 @@ use crate::{
             UPowerService,
         },
     },
+    t,
     theme::use_theme,
     utils::{self, IndicatorState, format_duration},
 };
@@ -36,7 +37,7 @@ fn format_time_for_battery(battery: &BatteryData) -> String {
             if battery.capacity >= 100 {
                 "100%".to_string()
             } else if duration.is_zero() {
-                "Calculating...".to_string()
+                t!("settings-power-calculating")
             } else {
                 format_duration(&duration)
             }
@@ -176,26 +177,26 @@ impl PowerSettings {
     pub fn menu<'a>(&'a self) -> Element<'a, Message> {
         let space = use_theme(|t| t.space);
         column!(
-            styled_button("Suspend")
+            styled_button(t!("settings-power-suspend"))
                 .icon(StaticIcon::Suspend, IconPosition::Before)
                 .on_press(Message::Suspend)
                 .width(Length::Fill),
             self.config.hibernate_cmd.as_ref().map(|_| {
-                styled_button("Hibernate")
+                styled_button(t!("settings-power-hibernate"))
                     .icon(StaticIcon::Hibernate, IconPosition::Before)
                     .on_press(Message::Hibernate)
                     .width(Length::Fill)
             }),
-            styled_button("Reboot")
+            styled_button(t!("settings-power-reboot"))
                 .icon(StaticIcon::Reboot, IconPosition::Before)
                 .on_press(Message::Reboot)
                 .width(Length::Fill),
-            styled_button("Shutdown")
+            styled_button(t!("settings-power-shutdown"))
                 .icon(StaticIcon::Power, IconPosition::Before)
                 .on_press(Message::Shutdown)
                 .width(Length::Fill),
             divider(),
-            styled_button("Logout")
+            styled_button(t!("settings-power-logout"))
                 .icon(StaticIcon::Logout, IconPosition::Before)
                 .on_press(Message::Logout)
                 .width(Length::Fill),
@@ -371,7 +372,10 @@ impl PowerSettings {
             match battery.status {
                 BatteryStatus::Charging(remaining) if battery.capacity < 95 => row!(
                     battery_info,
-                    text(format!("Full in {}", format_duration(&remaining)))
+                    text(t!(
+                        "settings-power-full-in",
+                        duration = format_duration(&remaining)
+                    ))
                 )
                 .spacing(space.md),
                 BatteryStatus::Discharging(remaining)
@@ -379,7 +383,10 @@ impl PowerSettings {
                 {
                     row!(
                         battery_info,
-                        text(format!("Empty in {}", format_duration(&remaining)))
+                        text(t!(
+                            "settings-power-empty-in",
+                            duration = format_duration(&remaining)
+                        ))
                     )
                     .spacing(space.md)
                 }
@@ -460,12 +467,11 @@ impl PowerSettings {
                     quick_setting_button(
                         convert::Into::<StaticIcon>::into(service.power_profile),
                         match service.power_profile {
-                            PowerProfile::Balanced => "Balanced",
-                            PowerProfile::Performance => "Performance",
-                            PowerProfile::PowerSaver => "Power Saver",
-                            PowerProfile::Unknown => "",
-                        }
-                        .to_string(),
+                            PowerProfile::Balanced => t!("settings-power-profile-balanced"),
+                            PowerProfile::Performance => t!("settings-power-profile-performance"),
+                            PowerProfile::PowerSaver => t!("settings-power-profile-power-saver"),
+                            PowerProfile::Unknown => String::new(),
+                        },
                         None,
                         true,
                         Message::TogglePowerProfile,

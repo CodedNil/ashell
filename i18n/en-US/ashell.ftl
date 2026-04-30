@@ -42,3 +42,47 @@ osd-idle-inhibitor-toggle =
         [on] Idle inhibitor turned on
        *[off] Idle inhibitor turned off
     }
+
+## Settings — shared
+settings-scanning = Scanning...
+settings-more = More
+
+## Settings — network
+settings-network-wifi = Wi-Fi
+settings-network-vpn = VPN
+settings-network-vpns-connected =
+    { $count ->
+        [one] { $count } VPN Connected
+       *[other] { $count } VPNs Connected
+    }
+settings-network-airplane-mode = Airplane Mode
+settings-network-nearby-wifi = Nearby Wifi
+
+## Settings — bluetooth
+settings-bluetooth = Bluetooth
+settings-bluetooth-devices = Bluetooth Devices
+settings-bluetooth-known-devices = Known devices
+settings-bluetooth-available = Available
+settings-bluetooth-pair = Pair
+settings-bluetooth-no-devices = No devices found
+settings-bluetooth-connected-count =
+    { $count ->
+        [one] { $count } device
+       *[other] { $count } devices
+    }
+
+## Settings — power
+settings-power-suspend = Suspend
+settings-power-hibernate = Hibernate
+settings-power-reboot = Reboot
+settings-power-shutdown = Shutdown
+settings-power-logout = Logout
+settings-power-calculating = Calculating...
+settings-power-full-in = Full in { $duration }
+settings-power-empty-in = Empty in { $duration }
+settings-power-profile-balanced = Balanced
+settings-power-profile-performance = Performance
+settings-power-profile-power-saver = Power Saver
+
+## Settings — idle inhibitor
+settings-idle-inhibitor = Idle Inhibitor

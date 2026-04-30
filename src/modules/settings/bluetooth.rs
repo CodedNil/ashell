@@ -10,6 +10,7 @@ use crate::{
         ReadOnlyService, Service, ServiceEvent,
         bluetooth::{BluetoothCommand, BluetoothDevice, BluetoothService, BluetoothState},
     },
+    t,
     theme::{AshellTheme, use_theme},
     utils::IndicatorState,
 };
@@ -186,7 +187,7 @@ impl BluetoothSettings {
             let device_name = match connected_devices.len() {
                 0 => None,
                 1 => Some(connected_devices[0].clone()),
-                n => Some(format!("{} devices", n)),
+                n => Some(t!("settings-bluetooth-connected-count", count = n)),
             };
 
             Some((
@@ -196,7 +197,7 @@ impl BluetoothSettings {
                     } else {
                         StaticIcon::BluetoothOff
                     },
-                    "Bluetooth".to_owned(),
+                    t!("settings-bluetooth"),
                     device_name,
                     service.state == BluetoothState::Active,
                     Message::Toggle,
@@ -247,11 +248,11 @@ impl BluetoothSettings {
             Column::with_capacity(6)
                 .push(
                     row![
-                        text("Bluetooth Devices").width(Length::Fill),
+                        text(t!("settings-bluetooth-devices")).width(Length::Fill),
                         text(if service.discovering {
-                            "Scanning..."
+                            t!("settings-scanning")
                         } else {
-                            ""
+                            String::new()
                         })
                         .size(theme.font_size.xs),
                         icon_button(if service.discovering {
@@ -306,7 +307,7 @@ impl BluetoothSettings {
                         column!(
                             column!(
                                 container(
-                                    text("Known devices")
+                                    text(t!("settings-bluetooth-known-devices"))
                                         .size(theme.font_size.xs)
                                         .width(Length::Fill)
                                         .align_x(Horizontal::Right)
@@ -332,7 +333,7 @@ impl BluetoothSettings {
                         column!(
                             column!(
                                 container(
-                                    text("Available")
+                                    text(t!("settings-bluetooth-available"))
                                         .width(Length::Fill)
                                         .align_x(Horizontal::Right)
                                         .size(theme.font_size.xs),
@@ -346,7 +347,8 @@ impl BluetoothSettings {
                                         styled_button(Element::from(
                                             row![
                                                 text(d.name.clone()).width(Length::Fill),
-                                                text("Pair").size(theme.font_size.xs),
+                                                text(t!("settings-bluetooth-pair"))
+                                                    .size(theme.font_size.xs),
                                             ]
                                             .align_y(Vertical::Center)
                                             .spacing(theme.space.xs),
@@ -367,13 +369,13 @@ impl BluetoothSettings {
                     None
                 })
                 .push(if !some_known && !some_available {
-                    Some(text("No devices found"))
+                    Some(text(t!("settings-bluetooth-no-devices")))
                 } else {
                     None
                 })
                 .push(self.config.more_cmd.as_ref().map(|_| divider()))
                 .push(self.config.more_cmd.as_ref().map(|_| {
-                    styled_button("More")
+                    styled_button(t!("settings-more"))
                         .on_press(Message::More(id))
                         .width(Length::Fill)
                 }))
