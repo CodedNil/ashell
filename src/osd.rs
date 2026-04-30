@@ -139,7 +139,7 @@ impl Osd {
                 let label = match state.kind {
                     OsdKind::Airplane => t!("osd-airplane-toggle", state = state_key),
                     OsdKind::IdleInhibitor => t!("osd-idle-inhibitor-toggle", state = state_key),
-                    _ => String::new(),
+                    _ => unreachable!(),
                 };
                 container(text(label)).center_x(Length::Fill).into()
             }
