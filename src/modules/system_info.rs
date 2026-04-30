@@ -78,6 +78,7 @@ struct SystemInfoData {
     network: Option<NetworkData>,
 }
 
+#[allow(clippy::too_many_arguments)]
 fn get_system_info(
     system: &mut System,
     components: &mut Components,
@@ -85,6 +86,7 @@ fn get_system_info(
     (networks, last_check): (&mut Networks, Option<Instant>),
     temperature_sensor: &str,
     sensor_index: Option<usize>,
+    mounts: Option<&[String]>,
 ) -> SystemInfoData {
     system.refresh_memory();
     system.refresh_cpu_all();
@@ -150,6 +152,14 @@ fn get_system_info(
     let disks: Vec<(String, DiskView)> = disks
         .iter()
         .filter(|d| !d.is_removable() && d.total_space() != 0)
+        .filter(|d| {
+            if let Some(mounts) = mounts {
+                let mount_str = d.mount_point().display().to_string();
+                mounts.contains(&mount_str)
+            } else {
+                true
+            }
+        })
         .map(|d| {
             let total_space = d.total_space();
             let avail_space = d.available_space();
@@ -168,7 +178,21 @@ fn get_system_info(
                 },
             )
         })
-        .sorted_by(|a, b| a.0.cmp(&b.0))
+        .sorted_by(|a, b| {
+            if let Some(mounts_list) = mounts {
+                let pos_a = mounts_list
+                    .iter()
+                    .position(|m| m == &a.0)
+                    .unwrap_or(usize::MAX);
+                let pos_b = mounts_list
+                    .iter()
+                    .position(|m| m == &b.0)
+                    .unwrap_or(usize::MAX);
+                pos_a.cmp(&pos_b)
+            } else {
+                a.0.cmp(&b.0)
+            }
+        })
         .collect();
 
     let elapsed = last_check.map(|v| v.elapsed().as_secs());
@@ -284,6 +308,7 @@ impl SystemInfo {
             (&mut networks, None),
             config.temperature.sensor.as_str(),
             cached_sensor_index,
+            config.disk.mounts.as_deref(),
         );
 
         Self {
@@ -310,6 +335,7 @@ impl SystemInfo {
                     ),
                     &self.config.temperature.sensor,
                     self.cached_sensor_index,
+                    self.config.disk.mounts.as_deref(),
                 );
             }
         }
