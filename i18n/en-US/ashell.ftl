@@ -12,3 +12,11 @@ updates-available =
     }
 updates-button-update = Update
 updates-button-check-now = Check now
+
+## Media player module
+media-player-not-connected = Not connected to MPRIS service
+media-player-heading = Players
+media-player-loading-cover = Loading cover...
+media-player-no-title = No Title
+media-player-unknown-artist = Unknown Artist
+media-player-unknown-album = Unknown Album

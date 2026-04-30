@@ -9,6 +9,7 @@ use crate::{
             MprisPlayerCommand, MprisPlayerData, MprisPlayerService, PlaybackStatus, PlayerCommand,
         },
     },
+    t,
     theme::use_theme,
     utils::truncate_text,
 };
@@ -80,9 +81,9 @@ impl MediaPlayer {
         let (space, font_size, opacity, radius) =
             use_theme(|theme| (theme.space, theme.font_size, theme.opacity, theme.radius));
         container(match &self.service {
-            None => Into::<Element<'a, Message>>::into(text("Not connected to MPRIS service")),
+            None => Into::<Element<'a, Message>>::into(text(t!("media-player-not-connected"))),
             Some(service) => column!(
-                text("Players").size(font_size.lg),
+                text(t!("media-player-heading")).size(font_size.lg),
                 divider(),
                 column(service.players().iter().map(|d| {
                     const LEFT_COLUMN_WIDTH: Length = Length::FillPortion(3);
@@ -90,14 +91,14 @@ impl MediaPlayer {
                     let m = d.metadata.as_ref();
                     let title = m
                         .and_then(|m| m.title.clone())
-                        .unwrap_or("No Title".to_string());
+                        .unwrap_or_else(|| t!("media-player-no-title"));
                     let artists = m
                         .and_then(|m| m.artists.clone())
                         .map(|a| a.join(", "))
-                        .unwrap_or("Unknown Artist".to_string());
+                        .unwrap_or_else(|| t!("media-player-unknown-artist"));
                     let album = m
                         .and_then(|m| m.album.clone())
-                        .unwrap_or("Unknown Album".to_string());
+                        .unwrap_or_else(|| t!("media-player-unknown-album"));
                     let title = text(truncate_text(&title, self.config.max_title_length))
                         .wrapping(text::Wrapping::WordOrGlyph)
                         .width(Length::Fill);
@@ -153,7 +154,7 @@ impl MediaPlayer {
                                         .filter_method(image::FilterMethod::Linear)
                                         .into()
                                 })
-                                .unwrap_or_else(|| text("Loading cover...").into());
+                                .unwrap_or_else(|| text(t!("media-player-loading-cover")).into());
                             container(inner).center_x(RIGHT_COLUMN_WIDTH).into()
                         });
                     let metadata = |description, cover| -> Element<'_, _> {
