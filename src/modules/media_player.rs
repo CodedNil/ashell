@@ -228,7 +228,7 @@ impl MediaPlayer {
     fn get_title(&self, d: &MprisPlayerData) -> String {
         match &d.metadata {
             Some(m) => truncate_text(&m.to_string(), self.config.max_title_length),
-            None => "No Title".to_string(),
+            None => t!("media-player-no-title"),
         }
     }
 
