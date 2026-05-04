@@ -163,8 +163,8 @@ impl super::NetworkBackend for NetworkDbus<'_> {
             debug!("Activating VPN: {connection:?}");
             self.activate_connection(
                 connection,
-                OwnedObjectPath::try_from("/").unwrap(),
-                OwnedObjectPath::try_from("/").unwrap(),
+                OwnedObjectPath::try_from("/").expect("D-Bus root path is always valid"),
+                OwnedObjectPath::try_from("/").expect("D-Bus root path is always valid"),
             )
             .await?;
         } else {
