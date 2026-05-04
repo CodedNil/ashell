@@ -4,6 +4,7 @@ use crate::{
     components::icons::{StaticIcon, icon},
     config::{CpuFormat, DiskFormat, MemoryFormat, SystemInfoIndicator, SystemInfoModuleConfig},
     i18n::{UnitSystem, unit_system},
+    t,
     theme::use_theme,
     utils,
 };
@@ -335,7 +336,7 @@ impl SystemInfo {
         info_icon: StaticIcon,
         (display, unit): (impl std::fmt::Display + 'a, &str),
         threshold: Option<(V, V, V)>,
-        prefix: Option<&str>,
+        prefix: Option<String>,
     ) -> Element<'a, Message> {
         let space = use_theme(|t| t.space);
         let element = container(
@@ -372,12 +373,12 @@ impl SystemInfo {
         let (font_size, space) = use_theme(|t| (t.font_size, t.space));
         container(
             column!(
-                text("System Info").size(font_size.lg),
+                text(t!("system-info-heading")).size(font_size.lg),
                 divider(),
                 Column::with_capacity(6)
                     .push(Self::info_element(
                         StaticIcon::Cpu,
-                        "CPU Usage".to_string(),
+                        t!("system-info-cpu-usage"),
                         match self.config.cpu.format {
                             CpuFormat::Percentage => format!("{}%", self.data.cpu_usage.percentage),
                             CpuFormat::Frequency =>
@@ -386,7 +387,7 @@ impl SystemInfo {
                     ))
                     .push(Self::info_element(
                         StaticIcon::Mem,
-                        "Memory Usage".to_string(),
+                        t!("system-info-memory-usage"),
                         match self.config.memory.format {
                             MemoryFormat::Percentage =>
                                 format!("{}%", self.data.memory_usage.percentage),
@@ -396,7 +397,7 @@ impl SystemInfo {
                     ))
                     .push(Self::info_element(
                         StaticIcon::Mem,
-                        "Swap memory Usage".to_string(),
+                        t!("system-info-swap-memory-usage"),
                         match self.config.memory.format {
                             MemoryFormat::Percentage =>
                                 format!("{}%", self.data.memory_swap_usage.percentage),
@@ -405,7 +406,7 @@ impl SystemInfo {
                         }
                     ))
                     .push(self.data.temperature.celsius.map(|cel| {
-                        Self::info_element(StaticIcon::Temp, "Temperature".to_string(), {
+                        Self::info_element(StaticIcon::Temp, t!("system-info-temperature"), {
                             let units = unit_system();
                             let value = match units {
                                 UnitSystem::Metric => cel,
@@ -422,7 +423,7 @@ impl SystemInfo {
                                 .map(|(mount_point, usage)| {
                                     Self::info_element(
                                         StaticIcon::Drive,
-                                        format!("Disk Usage {mount_point}"),
+                                        t!("system-info-disk-usage", mount = mount_point.as_str()),
                                         match self.config.disk.format {
                                             DiskFormat::Percentage => {
                                                 format!("{}%", usage.percentage)
@@ -441,12 +442,12 @@ impl SystemInfo {
                         Column::with_children(vec![
                             Self::info_element(
                                 StaticIcon::IpAddress,
-                                "IP Address".to_string(),
+                                t!("system-info-ip-address"),
                                 network.ip.to_string(),
                             ),
                             Self::info_element(
                                 StaticIcon::DownloadSpeed,
-                                "Download Speed".to_string(),
+                                t!("system-info-download-speed"),
                                 if network.download_speed > 1000 {
                                     format!("{} MB/s", network.download_speed / 1000)
                                 } else {
@@ -455,7 +456,7 @@ impl SystemInfo {
                             ),
                             Self::info_element(
                                 StaticIcon::UploadSpeed,
-                                "Upload Speed".to_string(),
+                                t!("system-info-upload-speed"),
                                 if network.upload_speed > 1000 {
                                     format!("{} MB/s", network.upload_speed / 1000)
                                 } else {
@@ -521,7 +522,7 @@ impl SystemInfo {
                     self.config.memory.warn_threshold,
                     self.config.memory.alert_threshold,
                 )),
-                Some("swap"),
+                Some(t!("system-info-swap-indicator-prefix")),
             )),
 
             SystemInfoIndicator::Temperature => self.data.temperature.celsius.map(|cel| {
@@ -555,7 +556,7 @@ impl SystemInfo {
                                 self.config.disk.warn_threshold,
                                 self.config.disk.alert_threshold,
                             )),
-                            Some(config.name.as_deref().unwrap_or(disk_mount)),
+                            Some(config.name.as_deref().unwrap_or(disk_mount).to_string()),
                         ))
                     } else {
                         None
