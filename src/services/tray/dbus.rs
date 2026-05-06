@@ -127,7 +127,7 @@ impl StatusNotifierWatcher {
                 let emitter = SignalEmitter::new(conn, OBJECT_PATH).unwrap();
                 watcher
                     .register_status_notifier_item_manual(
-                        "/StatusNotifierItem",
+                        name_str,
                         sender.into_inner(),
                         &emitter,
                     )
