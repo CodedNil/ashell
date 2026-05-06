@@ -126,11 +126,7 @@ impl StatusNotifierWatcher {
                 let mut watcher = interface.get_mut().await;
                 let emitter = SignalEmitter::new(conn, OBJECT_PATH).unwrap();
                 watcher
-                    .register_status_notifier_item_manual(
-                        name_str,
-                        sender.into_inner(),
-                        &emitter,
-                    )
+                    .register_status_notifier_item_manual(name_str, sender.into_inner(), &emitter)
                     .await;
             }
         }
