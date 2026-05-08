@@ -126,7 +126,11 @@ impl StatusNotifierWatcher {
                 let mut watcher = interface.get_mut().await;
                 let emitter = SignalEmitter::new(conn, OBJECT_PATH).unwrap();
                 watcher
-                    .register_status_notifier_item_manual(name_str, sender.into_inner(), &emitter)
+                    .register_status_notifier_item_manual(
+                        "/StatusNotifierItem",
+                        sender.into_inner(),
+                        &emitter,
+                    )
                     .await;
             }
         }
@@ -141,15 +145,15 @@ impl StatusNotifierWatcher {
         sender: UniqueName<'static>,
         emitter: &SignalEmitter<'_>,
     ) {
+        if self.items.iter().any(|(s, _)| s == &sender) {
+            return;
+        }
+
         let service = if service.starts_with('/') {
             format!("{sender}{service}")
         } else {
             service.to_string()
         };
-
-        if self.items.iter().any(|(_, s)| s == &service) {
-            return;
-        }
 
         Self::status_notifier_item_registered(emitter, &service)
             .await
