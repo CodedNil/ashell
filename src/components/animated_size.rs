@@ -64,7 +64,7 @@ where
 impl<'a, Message, Theme, Renderer> Widget<Message, Theme, Renderer>
     for AnimatedSize<'a, Message, Theme, Renderer>
 where
-    Message: Clone + 'a,
+    Message: 'a,
     Theme: 'a,
     Renderer: iced::core::Renderer + 'a,
 {
@@ -232,7 +232,7 @@ where
 impl<'a, Message, Theme, Renderer> From<AnimatedSize<'a, Message, Theme, Renderer>>
     for Element<'a, Message, Theme, Renderer>
 where
-    Message: Clone + 'a,
+    Message: 'a,
     Theme: 'a,
     Renderer: iced::core::Renderer + 'a,
 {
