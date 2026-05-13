@@ -145,15 +145,15 @@ impl StatusNotifierWatcher {
         sender: UniqueName<'static>,
         emitter: &SignalEmitter<'_>,
     ) {
+        if self.items.iter().any(|(s, _)| s == &sender) {
+            return;
+        }
+
         let service = if service.starts_with('/') {
             format!("{sender}{service}")
         } else {
             service.to_string()
         };
-
-        if self.items.iter().any(|(_, s)| s == &service) {
-            return;
-        }
 
         Self::status_notifier_item_registered(emitter, &service)
             .await
